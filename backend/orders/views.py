@@ -5,7 +5,7 @@ from .serializers import OrderSerializer
 from django.core.mail import send_mail
 from django.conf import settings
 
-WAREHOUSE_EMAIL = "jodon3262@gmail.com"
+WAREHOUSE_EMAIL = "donjorois@gmail.com"
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-created_at')
