@@ -4,12 +4,14 @@ import email
 from .models import Order
 from django.conf import settings
 import re
+import cohere
+
+# from openai import OpenAI
+# client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
-import openai
 
-openai.api_key = settings.OPENAI_API_KEY
-
+co = cohere.Client(settings.COHERE_API_KEY)
 
 @shared_task
 def check_incoming_emails():
@@ -34,15 +36,21 @@ def check_incoming_emails():
             body = msg.get_payload(decode=True).decode()
 
 
-        llm_response = openai.ChatCompletetion.create(
-            model= "gpt-3.5-turbo",
-            message=[
-                {"role":"system","content":"You are an assistant that helps confirm if an email indicates order confirmation."},
-                {"role":"user","content":f"Here is an email:\n{body}\n\n Does it confirm an order? if yes, extract the order number."}
-            ]
-        )
+        prompt = f"""You are an assistant that reads emails to determine if they confirm an order.
+            Email content:
+            {body}
 
-        answer = llm_response['choices'][0]['message']['content'].lower()
+            Question: Does this email confirm an order? If yes, please reply with "Yes" and the order number in format "Order #<number>".
+            If no, reply with "No".
+        """
+
+        response = co.generate(
+            model='command-r-plus',  
+            prompt=prompt,
+            max_tokens=50,
+            temperature=0.3,
+        )
+        answer = response.generations[0].text.strip().lower()
 
 
         if "yes" in answer:
