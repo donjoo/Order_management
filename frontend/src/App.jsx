@@ -1,16 +1,37 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Form from './pages/Form'
+import OrderForm from './pages/Form'
 
 function App() {
 
   return (
 
+<div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f9fafb",
+        padding: "1rem",
+      }}
+    >
+   
+  
+
     <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Form />} />
+
+      <Route path='/'  element={
+
+
+            <OrderForm />
+   
+        } />
+
+
     </Routes>
     </BrowserRouter>
-
+  </div>
   )
 }
 
