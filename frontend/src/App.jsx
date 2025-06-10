@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import OrderForm from './pages/Form'
+import OrdersList from './pages/Order_list'
 
 function App() {
 
@@ -21,12 +22,8 @@ function App() {
     <BrowserRouter>
     <Routes>
 
-      <Route path='/'  element={
-
-
-            <OrderForm />
-   
-        } />
+      <Route path='/'  element={<OrderForm />} />
+       <Route path='/list'  element={<OrdersList />} />
 
 
     </Routes>
