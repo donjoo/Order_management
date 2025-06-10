@@ -22,6 +22,7 @@ def check_incoming_emails():
     status, response = mail.search(None, 'UNSEEN')
     unread_msg_nums = response[0].split()
 
+    print("Checking inbox...")
     for e_id in unread_msg_nums:
         status , msg_data = mail.fetch(e_id, '(RFC822)')
         raw_email = msg_data[0][1]
@@ -34,7 +35,8 @@ def check_incoming_emails():
                     body = part.get_payload(decode=True).decode()
         else:
             body = msg.get_payload(decode=True).decode()
-
+        print("Email received. Body:", body)
+        print("Sending to LLM...")
 
         prompt = f"""You are an assistant that reads emails to determine if they confirm an order.
             Email content:
@@ -51,7 +53,7 @@ def check_incoming_emails():
             temperature=0.3,
         )
         answer = response.generations[0].text.strip().lower()
-
+        print("LLM Response:", answer)
 
         if "yes" in answer:
             match = re.search(r'order\s*#?(\d+)', answer)
@@ -61,8 +63,12 @@ def check_incoming_emails():
                     order = Order.objects.get(id=order_id)
                     order.status = 'Confirmed'
                     order.save()
+                    print(f"Order #{order_id} confirmed ✅")
                 except Order.DoesNotExist:
-                    password
-
+                    print(f"Order #{order_id} not found ❌")
+            else:
+                print("Could not extract order ID ❌")
+        else:
+            print("LLM did not confirm the order ❌")
 
     mail.logout()

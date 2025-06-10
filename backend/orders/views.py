@@ -4,6 +4,8 @@ from .models import Order
 from .serializers import OrderSerializer
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
+import urllib.parse
+
 
 WAREHOUSE_EMAIL = "donjorois@gmail.com"
 
@@ -19,6 +21,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         to_email = [WAREHOUSE_EMAIL]
 
        
+        confirm_subject = f"Confirm Order #{order.id}"
+        confirm_body = f"Order #{order.id} confirmed"
+
+        mailto_link = f"mailto:{settings.EMAIL_HOST_USER}?subject={urllib.parse.quote(confirm_subject)}&body={urllib.parse.quote(confirm_body)}"
+
        
         text_content = (
             f"Order Details:\n"
@@ -41,7 +48,8 @@ class OrderViewSet(viewsets.ModelViewSet):
             <p><strong>Cost:</strong> {order.product_cost}</p>
             <p><strong>User Email:</strong> {order.user_email}</p>
             <br>
-            <a href="mailto:{settings.EMAIL_HOST_USER}?subject=Confirm Order #{order.id}&body=Order #{order.id} is ready to dispatch"
+            <a href="{mailto_link}"
+
             style="background-color:#4CAF50;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">
             ✅ Confirm Order
             </a>
