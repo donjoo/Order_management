@@ -41,3 +41,49 @@ A full-stack web application using Django REST Framework and React, powered by C
 
 ---
 
+
+## 🛠️ Setup Instructions
+
+### 1. Clone the Repository
+
+
+```bash
+git clone https://github.com/donjoo/Order_management.git
+cd Order_management
+
+2. Backend Setup (Django)
+
+Install dependencies
+
+pip install -r requirements.txt
+
+Create .env file
+
+EMAIL_HOST_USER=yourcompanyemail@example.com
+EMAIL_HOST_PASSWORD=yourpassword
+COHERE_API_KEY=your_cohere_api_key
+
+Apply migrations
+
+python manage.py migrate
+
+Run the development server
+
+python manage.py runserver
+
+3. Frontend Setup (React)
+
+cd frontend
+npm install
+npm start
+
+4. Celery & Scheduler
+
+Start Celery worker:
+
+celery -A backend worker --loglevel=info
+
+Start periodic task runner:
+
+celery -A backend beat --loglevel=info
+

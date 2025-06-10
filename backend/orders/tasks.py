@@ -43,7 +43,7 @@ def check_incoming_emails():
             {body}
 
             Question: Does this email confirm an order? If yes, please reply with "Yes" and the order number in format "Order #<number>".
-            If no, reply with "No".
+            If no, reply with "No", Also if the email says order ready to dispatch or something similar , please reply with 'Ready to dispatch".
         """
 
         response = co.generate(
@@ -54,6 +54,7 @@ def check_incoming_emails():
         )
         answer = response.generations[0].text.strip().lower()
         print("LLM Response:", answer)
+
 
         if "yes" in answer:
             match = re.search(r'order\s*#?(\d+)', answer)
@@ -68,6 +69,22 @@ def check_incoming_emails():
                     print(f"Order #{order_id} not found ❌")
             else:
                 print("Could not extract order ID ❌")
+
+
+        if 'Ready to dispatch' in answer:
+            match = re.search(r'order\s*#?(\d+)', answer)
+            if match:
+                order_id = int(match.group(1))
+                try:
+                    order = Order.objects.get(id=order_id)
+                    order.status = 'Dispatched'
+                    order.save()
+                    print(f"Order #{order_id} confirmed ✅")
+                except Order.DoesNotExist:
+                    print(f"Order #{order_id} not found ❌")
+            else:
+                print("Could not extract order ID ❌")
+
         else:
             print("LLM did not confirm the order ❌")
 
