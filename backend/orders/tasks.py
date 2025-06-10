@@ -55,6 +55,8 @@ def check_incoming_emails():
         answer = response.generations[0].text.strip().lower()
         print("LLM Response:", answer)
 
+        confirmed = False
+        dispatched = False
 
         if "yes" in answer:
             match = re.search(r'order\s*#?(\d+)', answer)
@@ -64,6 +66,7 @@ def check_incoming_emails():
                     order = Order.objects.get(id=order_id)
                     order.status = 'Confirmed'
                     order.save()
+                    confirmed = True
                     print(f"Order #{order_id} confirmed ✅")
                 except Order.DoesNotExist:
                     print(f"Order #{order_id} not found ❌")
@@ -71,7 +74,7 @@ def check_incoming_emails():
                 print("Could not extract order ID ❌")
 
 
-        if 'Ready to dispatch' in answer:
+        elif 'ready to dispatch' in answer:
             match = re.search(r'order\s*#?(\d+)', answer)
             if match:
                 order_id = int(match.group(1))
@@ -79,13 +82,14 @@ def check_incoming_emails():
                     order = Order.objects.get(id=order_id)
                     order.status = 'Dispatched'
                     order.save()
+                    dispatched = True
                     print(f"Order #{order_id} confirmed ✅")
                 except Order.DoesNotExist:
                     print(f"Order #{order_id} not found ❌")
             else:
                 print("Could not extract order ID ❌")
 
-        else:
+        if not confirmed and not dispatched:
             print("LLM did not confirm the order ❌")
 
     mail.logout()
