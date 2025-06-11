@@ -3,6 +3,8 @@
 
 A full-stack web application to streamline and automate product order management using AI-powered email parsing and scheduling.
 
+This system uses an AI-powered email processing backend, where a large language model (via Cohere API) is used to interpret incoming emails and update order statuses accordingly. It replaces manual or rule-based parsing logic with AI understanding.
+
 ------------------------------------------------------------
 
 Tech Stack
@@ -45,8 +47,8 @@ Follow these steps to get the application running locally:
 
 1. Clone the Repository
 
-    git clone https://github.com/donjoo/Order_management.git
-    cd Order_management
+    - git clone https://github.com/donjoo/Order_management.git
+    - cd Order_management
 
 2. Backend Setup (Django)
 
@@ -56,9 +58,9 @@ Follow these steps to get the application running locally:
 
     - Create a .env file in the project root with the following content:
 
-        EMAIL_HOST_USER=yourcompanyemail@example.com
-        EMAIL_HOST_PASSWORD=yourpassword
-        COHERE_API_KEY=your_cohere_api_key
+      -  EMAIL_HOST_USER=yourcompanyemail@example.com
+      - EMAIL_HOST_PASSWORD=yourpassword
+      - COHERE_API_KEY=your_cohere_api_key
 
     - Apply database migrations:
 
