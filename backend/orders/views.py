@@ -7,7 +7,7 @@ from django.conf import settings
 import urllib.parse
 
 
-WAREHOUSE_EMAIL = "donjorois@gmail.com"
+WAREHOUSE_EMAIL = settings.WAREHOUSE_EMAIL
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-created_at')
